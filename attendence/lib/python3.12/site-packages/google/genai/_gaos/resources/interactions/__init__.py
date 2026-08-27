@@ -97,6 +97,7 @@ from ...types.interactions.tool import Tool
 from ...types.interactions.toolchoiceconfig import ToolChoiceConfig
 from ...types.interactions.toolchoicetype import ToolChoiceType
 from ...types.interactions.transcriptionconfig import TranscriptionConfig
+from ...types.interactions.transcriptionmode import TranscriptionMode
 from ...types.interactions.urlcitation import URLCitation
 from ...types.interactions.urlcontextcallarguments import URLContextCallArguments
 from ...types.interactions.urlcontextcallstep import URLContextCallStep
@@ -122,6 +123,7 @@ from . import placecitation
 from . import retrievalcalldelta
 from . import stepdelta
 from . import tool
+from . import transcriptionmode
 from . import urlcontextcallstep
 from . import urlcontextresultstep
 from . import usage
@@ -201,6 +203,7 @@ __all__ = [
     "ToolChoiceConfig",
     "ToolChoiceType",
     "TranscriptionConfig",
+    "TranscriptionMode",
     "URLCitation",
     "URLContextCallArguments",
     "URLContextCallStep",
@@ -226,6 +229,7 @@ __all__ = [
     "retrievalcalldelta",
     "stepdelta",
     "tool",
+    "transcriptionmode",
     "urlcontextcallstep",
     "urlcontextresultstep",
     "usage",
