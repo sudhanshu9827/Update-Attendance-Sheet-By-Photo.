@@ -1,2 +1,4 @@
 .env
 Credentials.json
+token.json
+attendance_images
