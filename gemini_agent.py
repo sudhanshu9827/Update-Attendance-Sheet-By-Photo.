@@ -6,6 +6,18 @@ from dotenv import load_dotenv
 
 from models import AttendanceSheet
 
+import google
+import sys
+
+
+
+print("========== GOOGLE DEBUG ==========")
+print("Python:", sys.version)
+print("Google module:", google)
+print("Google path:", getattr(google, "__path__", None))
+print("Google file:", getattr(google, "__file__", None))
+print("==================================")
+
 
 # =======================================
 # Load environment variables
