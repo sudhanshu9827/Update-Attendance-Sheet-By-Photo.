@@ -1,22 +1,38 @@
 import os
 
-from google import genai
-from google.genai import types
+# from google import genai
+# from google.genai import types
 from dotenv import load_dotenv
 
 from models import AttendanceSheet
 
 import google
 import sys
-
-
+import sys
+import google
 
 print("========== GOOGLE DEBUG ==========")
 print("Python:", sys.version)
 print("Google module:", google)
 print("Google path:", getattr(google, "__path__", None))
 print("Google file:", getattr(google, "__file__", None))
+
+try:
+    import google.genai
+
+    print("google.genai FOUND")
+    print("google.genai:", google.genai)
+    print("google.genai file:", google.genai.__file__)
+
+except Exception as e:
+
+    print("google.genai FAILED")
+    print("Error:", repr(e))
+
 print("==================================")
+
+from google import genai
+from google.genai import types
 
 
 # =======================================

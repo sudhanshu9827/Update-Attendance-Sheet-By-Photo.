@@ -1,5 +1,4 @@
 streamlit
-google-genai
 gspread
 google-auth
 google-auth-oauthlib
@@ -7,3 +6,4 @@ google-auth-httplib2
 python-dotenv
 pydantic
 pillow
+google-genai==2.19.0
