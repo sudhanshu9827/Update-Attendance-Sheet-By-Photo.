@@ -5,15 +5,30 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 import gspread
+from dotenv import load_dotenv
 
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+
+
+
+load_dotenv()
 # =======================================
 # Configuration
 # =======================================
 
-SHEET_URL = os.getenv(
-    "SHEET_URL",
-    "https://docs.google.com/spreadsheets/d/105QZh9Gu0kqJzImmQdAj5FwPBxIEqI5f8TGTEMngK38/edit?gid=0#gid=0"
-)
+SHEET_URL = os.getenv("SHEET_URL")
+
+if not SHEET_URL:
+    try:
+        import streamlit as st
+        SHEET_URL = st.secrets["SHEET_URL"]
+    except Exception:
+        pass
+
+if not SHEET_URL:
+    raise ValueError(
+        "SHEET_URL is not configured."
+    )
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets"
@@ -29,11 +44,47 @@ TOKEN_FILE = "token.json"
 
 def get_google_client():
 
+    # ==========================================
+    # STREAMLIT CLOUD
+    # ==========================================
+
+    try:
+        import streamlit as st
+
+        if "gcp_service_account" in st.secrets:
+
+            print(
+                "☁️ Using Streamlit Cloud Service Account..."
+            )
+
+            service_account_info = dict(
+                st.secrets["gcp_service_account"]
+            )
+
+            creds = ServiceAccountCredentials.from_service_account_info(
+                service_account_info,
+                scopes=SCOPES
+            )
+
+            return gspread.authorize(creds)
+
+    except Exception as e:
+
+        print(
+            f"Cloud authentication unavailable: {e}"
+        )
+
+    # ==========================================
+    # LOCAL DEVELOPMENT
+    # ==========================================
+
+    print("💻 Using local Google OAuth...")
+
     creds = None
 
-    # -----------------------------------
+    # ------------------------------------------
     # Existing token
-    # -----------------------------------
+    # ------------------------------------------
 
     if os.path.exists(TOKEN_FILE):
 
@@ -42,17 +93,17 @@ def get_google_client():
             SCOPES
         )
 
-    # -----------------------------------
+    # ------------------------------------------
     # Refresh token
-    # -----------------------------------
+    # ------------------------------------------
 
     if creds and creds.expired and creds.refresh_token:
 
         creds.refresh(Request())
 
-    # -----------------------------------
+    # ------------------------------------------
     # New authentication
-    # -----------------------------------
+    # ------------------------------------------
 
     if not creds or not creds.valid:
 

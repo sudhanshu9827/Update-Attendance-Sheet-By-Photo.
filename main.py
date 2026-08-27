@@ -19,13 +19,21 @@ from sheets import (
 
 load_dotenv()
 
+load_dotenv()
+
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    raise ValueError(
-        "GEMINI_API_KEY is not set in .env"
-    )
+    try:
+        import streamlit as st
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        pass
 
+if not api_key:
+    raise ValueError(
+        "GEMINI_API_KEY is not configured."
+    )
 
 # =======================================
 # Create Gemini client
