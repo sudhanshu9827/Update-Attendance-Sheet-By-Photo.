@@ -53,9 +53,7 @@ def get_google_client():
 
         if "gcp_service_account" in st.secrets:
 
-            print(
-                "☁️ Using Streamlit Cloud Service Account..."
-            )
+            print("☁️ Using Streamlit Service Account...")
 
             service_account_info = dict(
                 st.secrets["gcp_service_account"]
@@ -68,23 +66,30 @@ def get_google_client():
 
             return gspread.authorize(creds)
 
+    except ImportError:
+        # Streamlit isn't available.
+        pass
+
     except Exception as e:
 
-        print(
-            f"Cloud authentication unavailable: {e}"
+        raise RuntimeError(
+            "Google Service Account authentication failed. "
+            f"Check Streamlit Secrets. Details: {e}"
         )
 
     # ==========================================
     # LOCAL DEVELOPMENT
     # ==========================================
 
-    print("💻 Using local Google OAuth...")
+    if not os.path.exists(CREDENTIALS_FILE):
+
+        raise FileNotFoundError(
+            "credentials.json not found. "
+            "For Streamlit Cloud, configure "
+            "[gcp_service_account] in Streamlit Secrets."
+        )
 
     creds = None
-
-    # ------------------------------------------
-    # Existing token
-    # ------------------------------------------
 
     if os.path.exists(TOKEN_FILE):
 
@@ -93,17 +98,9 @@ def get_google_client():
             SCOPES
         )
 
-    # ------------------------------------------
-    # Refresh token
-    # ------------------------------------------
-
     if creds and creds.expired and creds.refresh_token:
 
         creds.refresh(Request())
-
-    # ------------------------------------------
-    # New authentication
-    # ------------------------------------------
 
     if not creds or not creds.valid:
 
@@ -118,9 +115,7 @@ def get_google_client():
 
         with open(TOKEN_FILE, "w") as token:
 
-            token.write(
-                creds.to_json()
-            )
+            token.write(creds.to_json())
 
     return gspread.authorize(creds)
 
